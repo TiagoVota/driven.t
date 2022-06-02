@@ -2,14 +2,13 @@ import styled from 'styled-components';
 
 const Box = styled.section`
   height: 100%;
-  max-height: ${(props) => props.height || '500px'};
+  max-height: ${(props) => props.height || '530px'};
 
   width: 100%;
   max-width: ${(props) => props.width || '1200px'};
 
-  overflow: hidden;
-
   display: flex;
+  flex-direction: column;
   justify-content: ${(props) => props.center || 'center'};
   align-items: ${(props) => props.center || 'center'};
 

@@ -2,19 +2,17 @@ import Title from '../../../components/Title';
 import useEnrollment from '../../../hooks/api/useEnrollment';
 import Box from '../../../components/Box';
 import GreyText from '../../../components/GreyText';
-import useModality from '../../../hooks/api/useModality';
+import TicketScreen from './TicketScreen';
 
 export default function PaymentScreen() {
   const { enrollment } = useEnrollment();
-  const { modalities, getModalityError } = useModality();
 
   return (
     <>
       <Title>Ingresso e pagamento </Title>
       <Box center={enrollment}>
         {enrollment ? (
-          <GreyText>Primeiro, escolha sua modalidade de ingresso</GreyText>
-
+          <TicketScreen/>
         ) : (
           <GreyText width="200">
             Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso
