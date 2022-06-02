@@ -9,7 +9,7 @@ import {
 } from './utils';
 
 import { cvcPattern, findIssuer, numberPattern } from './utils/patterns';
-import { expiryValidation } from './utils/validations';
+import { cvcValidation, expiryValidation, nameValidation, numberValidation } from './utils/validations';
 
 const standardState = {
   cvc: '',
@@ -48,13 +48,34 @@ export default class App extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
+    const { name, number, expiry, cvc, issuer, isValid } = this.state;
+    const numberLength = numberPattern(issuer).length;
+    const cvcLength = cvcPattern(issuer).length;
+
+    const {
+      isValid: isValidNumber,
+      error: numberError
+    } = numberValidation(number, numberLength, isValid);
+    if (!isValidNumber) return toast.error(numberError);
+
+    const {
+      isValid: isValidName,
+      error: nameError
+    } = nameValidation(name);
+    if (!isValidName) return toast.error(nameError);
+
     const {
       isValid: isValidExpiry,
       error: expiryError
-    } = expiryValidation(this.state.expiry);
+    } = expiryValidation(expiry);
     if (!isValidExpiry) return toast.error(expiryError);
+
+    const {
+      isValid: isValidCvc,
+      error: cvcError
+    } = cvcValidation(cvc, cvcLength);
+    if (!isValidCvc) return toast.error(cvcError);
     
-    const { issuer } = this.state;
     const formData = [...event.target.elements]
       .filter(d => d.name)
       .reduce((acc, d) => {
