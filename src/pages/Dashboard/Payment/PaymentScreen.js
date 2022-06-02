@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { getTicketPrice } from '../../../services/ticketApi';
 import UserContext from '../../../contexts/UserContext';
 import { toast } from 'react-toastify';
+
 export default function PaymentScreen() {
   const { userData } = useContext(UserContext);
   const [ticket, setTicket] = useState();
@@ -19,14 +20,13 @@ export default function PaymentScreen() {
       <StyledParagraph>Ingresso Escolhido</StyledParagraph>
       <SelectionContainer>
         <SelectDiv>
-          <Modality>{ticket.name}</Modality>
-          <Price>R$ {ticket.price}</Price>
+          <Modality>{ticket?.name}</Modality>
+          <Price>R$ {ticket?.price}</Price>
         </SelectDiv>
       </SelectionContainer>
     </>
   );
 }
-
 const StyledParagraph = styled.p`
   font-style: normal;
   font-weight: 400;
