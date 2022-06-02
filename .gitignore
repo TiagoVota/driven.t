@@ -26,3 +26,8 @@ yarn-error.log*
 !.env.example
 
 package-lock.json
+
+# Credit card payment in progress...
+src/components/Card/legacy-validations.js
+src/components/Card/legacy.js
+src/components/Card/utils.js
