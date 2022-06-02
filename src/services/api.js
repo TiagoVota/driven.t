@@ -4,4 +4,12 @@ const instance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL
 });
 
+export function headerConfig(token) {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+}
+
 export default instance;
