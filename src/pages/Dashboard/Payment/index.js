@@ -3,6 +3,6 @@ import TicketScreen from './TicketScreen';
 import { useState } from 'react';
 
 export default function Payment() {
-  const [ticketScreen, setTicketScreen] = useState(true);
+  const [ticketScreen, setTicketScreen] = useState(false);
   return <>{ticketScreen ? <TicketScreen changeScreen={setTicketScreen}  /> : <PaymentScreen/>}</>;
 }
