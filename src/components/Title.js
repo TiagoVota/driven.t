@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Title = styled.h1`
-  font-family: 'Robote';
+  font-family: 'Roboto';
   font-size: 34px;
   font-weight: 400;
   line-height: 40px;

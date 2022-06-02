@@ -1,7 +1,7 @@
-import api from './api';
+import api, { HeaderConfig } from './api';
 
-export async function getModalities() {
-  const response = await api.get('/modalities');
+export async function getModalities(token) {
+  const config = HeaderConfig(token);
+  const response = await api.get('modalities', config);
   return response.data;
 }
-//
