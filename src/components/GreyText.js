@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
 const GreyText = styled.p`
-  max-width: ${(props) => props.width ? '400px' : '100%'};
-
+  max-width: ${(props) => (props.width ? '400px' : '100%')};
   font-family: Roboto;
   font-size: 20px;
   font-weight: 400;
