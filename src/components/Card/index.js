@@ -24,7 +24,7 @@ const standardState = {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = standardState;
+    this.state = { ...standardState };
   }
 
   handleCallback = ({ issuer }, isValid) => {
@@ -75,7 +75,7 @@ export default class App extends React.Component {
       error: cvcError
     } = cvcValidation(cvc, cvcLength);
     if (!isValidCvc) return toast.error(cvcError);
-    
+
     const formData = [...event.target.elements]
       .filter(d => d.name)
       .reduce((acc, d) => {
@@ -84,12 +84,14 @@ export default class App extends React.Component {
       }, {});
 
     this.setState({ formData });
-    this.setState(standardState);
   };
 
   render() {
     const { name, number, expiry, cvc, inFocus, formData, issuer } = this.state;
-    const numberMask = numberPattern(issuer).mask;
+    const {
+      mask: numberMask,
+      example: numberExample
+    } = numberPattern(issuer);
     const cvcMask = cvcPattern(issuer).mask;
 
     return (
@@ -114,6 +116,7 @@ export default class App extends React.Component {
             onFocus={this.handleInputFocus}
             required
           />
+          <span>{`Ex.: ${numberExample}`}</span>
           <InputMask
             type='text'
             name='name'

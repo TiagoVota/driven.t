@@ -9,12 +9,12 @@ const numberPattern = (cardIssuer) => {
     'amex': {
       mask: '9999 999999 99999',
       length: 15,
-      example: '34... 51... 78...',
+      example: '34... 50... 55... 60...',
     },
     'dinersclub': {
       mask: '9999 999999 9999',
       length: 14,
-      example: '36... 51... 78...',
+      example: '36... 53... 60... 62...',
     },
   };
   const standardPattern = {
@@ -23,7 +23,6 @@ const numberPattern = (cardIssuer) => {
     example: '49... 51... 36... 37...',
   };
 
-  console.log({ return: patternHashTable[cardIssuer] || standardPattern });
   return patternHashTable[cardIssuer] || standardPattern;
 };
 
