@@ -110,12 +110,12 @@ export default function TicketScreen(props) {
   function addIsSelectedKey(array) {
     return array.map((obj) => ({ ...obj, isSelected: false }));
   }
-
   async function handleTicketReservation(event) {
     event.preventDefault();
     try {
       const userId = userData.user.id;
-      await createTicket({ modalityId, userId });
+      const token = userData.token;
+      await createTicket({ modalityId, userId, token });
       toast('Ticket reservado com sucesso!');
       props.changeScreen(false);
     } catch (err) {
