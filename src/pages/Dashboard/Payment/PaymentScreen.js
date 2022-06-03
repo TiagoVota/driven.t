@@ -8,11 +8,12 @@ import useMakePayment from '../../../hooks/api/useMakePayment';
 import { getTicketPrice } from '../../../services/ticketApi';
 
 import CardForm from '../../../components/Card';
+import SuccessPayment from './SuccessPayment';
 
 export default function PaymentScreen() {
   const { userData } = useContext(UserContext);
   const [ticket, setTicket] = useState({});
-  const [isPayed, setIsPayed] = useState(true);
+  const [isPayed, setIsPayed] = useState(false);
   const {
     makePaymentLoading,
     makePayment,
@@ -51,7 +52,7 @@ export default function PaymentScreen() {
       <StyledParagraph>Pagamento</StyledParagraph>
       {
         isPayed
-          ? <></>
+          ? <SuccessPayment />
           : <CardForm
             confirmPayment={confirmPayment}
             makePaymentLoading={makePaymentLoading}
