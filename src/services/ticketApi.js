@@ -9,4 +9,9 @@ export async function getTicketPrice(userId) {
   const response = await api.post('/tickets/price', { userId });
   return response.data;
 }
+
+export async function getTicketByUser(userId) {
+  const response = await api.get(`/tickets/${userId}`);
+  return response.status;
+}
 //
