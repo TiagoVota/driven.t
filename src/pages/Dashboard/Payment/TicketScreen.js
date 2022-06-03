@@ -3,7 +3,7 @@ import Button from '../../../components/Form/Button.js';
 import styled from 'styled-components';
 import { useState, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { createTicket } from '../../../services/ticketApi';
+import { createTicket, getTicketByUser } from '../../../services/ticketApi';
 import { getModalities } from '../../../services/modalityApi';
 import UserContext from '../../../contexts/UserContext';
 
@@ -22,6 +22,15 @@ export default function TicketScreen(props) {
   const [modalityId, setModalityId] = useState(0);
 
   useEffect(() => {
+    async function checkIfUserHasATicket() {
+      try {
+        const status = await getTicketByUser(userData.user.id);
+        if (status === 200) props.changeScreen(false);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
     async function fillModalitiesArray() {
       try {
         const response = await getModalities();
@@ -31,6 +40,7 @@ export default function TicketScreen(props) {
       }
     }
 
+    checkIfUserHasATicket();
     fillModalitiesArray();
   }, []);
 
@@ -53,7 +63,7 @@ export default function TicketScreen(props) {
     setModalityPrice(modality.price);
     setFirstModalitySelected(true);
   }
-  
+
   function handleSecondSelection(hotelOption) {
     hotelSelection(hotelOption);
 
@@ -61,7 +71,7 @@ export default function TicketScreen(props) {
     sumModalities(modalityPrice, hotelOption.price);
     setAllModalitiesSelected(true);
   }
-  
+
   function resetClicks() {
     setModalityId(0);
     setAllModalitiesSelected(false);
@@ -70,7 +80,7 @@ export default function TicketScreen(props) {
     setHotelOptionsArray();
     setFirstModalitySelected(false);
   }
-  
+
   function modalitySelection(modality) {
     setModalitiesArray(() => {
       for (let i = 0; i < modalitiesArray.length; i++) {
@@ -98,14 +108,14 @@ export default function TicketScreen(props) {
   }
 
   function addIsSelectedKey(array) {
-    return array.map(obj => ({ ...obj, isSelected: false }));
+    return array.map((obj) => ({ ...obj, isSelected: false }));
   }
-
   async function handleTicketReservation(event) {
     event.preventDefault();
     try {
       const userId = userData.user.id;
-      await createTicket({ modalityId, userId });
+      const token = userData.token;
+      await createTicket({ modalityId, userId, token });
       toast('Ticket reservado com sucesso!');
       props.changeScreen(false);
     } catch (err) {
@@ -122,45 +132,45 @@ export default function TicketScreen(props) {
       <StyledParagraph>Primeiro, escolha sua modalidade de ingresso</StyledParagraph>
 
       <SelectionContainer>
-        {modalitiesArray.map(modality => {
+        {modalitiesArray.map((modality) => {
           return (
-            <SelectDiv 
-              key={modality.name} 
-              className={modality.isSelected ? 'selected' : ''} 
+            <SelectDiv
+              key={modality.name}
+              className={modality.isSelected ? 'selected' : ''}
               onClick={() => handleFirstSelection(modality)}
             >
               <Modality>{modality.name}</Modality>
-              <Price>{`R$ ${modality.price/100}`}</Price>
+              <Price>{`R$ ${modality.price / 100}`}</Price>
             </SelectDiv>
           );
         })}
       </SelectionContainer>
 
-      {firstModalitySelected &&
+      {firstModalitySelected && (
         <>
           <StyledParagraph>Ótimo! Agora escolha sua modalidade de hospedagem</StyledParagraph>
           <SelectionContainer>
-            {hotelOptionsArray.map(option => {
+            {hotelOptionsArray.map((option) => {
               return (
-                <SelectDiv 
-                  key={option.id} 
+                <SelectDiv
+                  key={option.id}
                   className={option.isSelected ? 'selected' : ''}
                   onClick={() => handleSecondSelection(option)}
                 >
                   <Modality>{option.isWanted ? 'Com Hotel' : 'Sem Hotel'}</Modality>
-                  <Price>{`+ R$ ${option.price/100}`}</Price>
+                  <Price>{`+ R$ ${option.price / 100}`}</Price>
                 </SelectDiv>
               );
             })}
           </SelectionContainer>
         </>
-      }
+      )}
 
       <FormWrapper>
         <SubmitContainer>
           {allModalitiesSelected && (
             <>
-              <StyledParagraph> Fechado! O total ficou em R$ {totalPrice/100}. Agora é só confirmar:</StyledParagraph>
+              <StyledParagraph> Fechado! O total ficou em R$ {totalPrice / 100}. Agora é só confirmar:</StyledParagraph>
               <Button onClick={handleTicketReservation}>Reservar Ingresso</Button>
             </>
           )}
@@ -201,7 +211,7 @@ const SelectionContainer = styled.div`
   }
 
   .selected {
-    background-color: #FFEED2;
+    background-color: #ffeed2;
     border: hidden;
   }
 `;
@@ -215,7 +225,7 @@ const SelectDiv = styled.div`
   justify-content: center;
   align-items: center;
 
-  border: 1px solid #CECECE;
+  border: 1px solid #cecece;
   border-radius: 20px;
 
   cursor: pointer;
