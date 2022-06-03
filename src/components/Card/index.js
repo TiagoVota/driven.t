@@ -1,15 +1,28 @@
 import React from 'react';
 import Card from 'react-credit-cards';
 import 'react-credit-cards/es/styles-compiled.css';
-import InputMask from 'react-input-mask';
 import { toast } from 'react-toastify';
+
+import {
+  cvcPattern,
+  findIssuer,
+  numberPattern,
+} from './utils/patterns';
+import {
+  cvcValidation,
+  expiryValidation,
+  nameValidation,
+  numberValidation,
+} from './utils/validations';
+
+import Button from '../Form/Button';
+import InputCard from './InputCard';
+
+import styled from 'styled-components';
 
 import {
   formatFormData
 } from './utils';
-
-import { cvcPattern, findIssuer, numberPattern } from './utils/patterns';
-import { cvcValidation, expiryValidation, nameValidation, numberValidation } from './utils/validations';
 
 const standardState = {
   cvc: '',
@@ -21,7 +34,7 @@ const standardState = {
   isValid: false,
 };
 
-export default class App extends React.Component {
+export default class CardForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = { ...standardState };
@@ -84,6 +97,7 @@ export default class App extends React.Component {
       }, {});
 
     this.setState({ formData });
+    this.props.confirmPayment();
   };
 
   render() {
@@ -106,49 +120,42 @@ export default class App extends React.Component {
           required
         />
         <form onSubmit={this.handleSubmit}>
-          <InputMask
+          <InputCard
             mask={numberMask}
-            maskChar='•'
             type='tel'
             name='number'
             placeholder='Número do Cartão'
             onChange={this.handleInputChange}
             onFocus={this.handleInputFocus}
-            required
           />
           <span>{`Ex.: ${numberExample}`}</span>
-          <InputMask
+          <InputCard
             type='text'
             name='name'
             placeholder='Nome'
             onChange={this.handleInputChange}
             onFocus={this.handleInputFocus}
-            required
           />
-          <InputMask
+          <InputCard
             mask='99/99'
-            maskChar='•'
             type='tel'
             name='expiry'
             placeholder='Validade (MM/AA)'
             onChange={this.handleInputChange}
             onFocus={this.handleInputFocus}
-            required
           />
-          <InputMask
+          <InputCard
             mask={cvcMask}
-            maskChar='•'
             type='tel'
             name='cvc'
             placeholder='CVC'
             onChange={this.handleInputChange}
             onFocus={this.handleInputFocus}
-            required
           />
 
-          <button type='submit'>
+          <Button type='submit'>
             FINALIZAR PAGAMENTO
-          </button>
+          </Button>
         </form>
 
         {formData && (

@@ -3,17 +3,23 @@ import styled from 'styled-components';
 import { getTicketPrice } from '../../../services/ticketApi';
 import UserContext from '../../../contexts/UserContext';
 import { toast } from 'react-toastify';
+import CardForm from '../../../components/Card';
 
 export default function PaymentScreen() {
   const { userData } = useContext(UserContext);
   const [ticket, setTicket] = useState();
+  const [isPayed, setIsPayed] = useState(false);
 
   useEffect(() => {
     const userId = userData.user.id;
     const promise = getTicketPrice(userId);
     promise.then((response) => setTicket(response));
-    promise.catch((error) => toast('Não foi possível selectionar o ticket!'));
+    promise.catch((error) => toast('Não foi possível selecionar o ticket!'));
   }, []);
+
+  const confirmPayment = () => {
+    return setIsPayed(true);
+  };
 
   return (
     <>
@@ -24,6 +30,14 @@ export default function PaymentScreen() {
           <Price>R$ {ticket?.price}</Price>
         </SelectDiv>
       </SelectionContainer>
+
+      <StyledParagraph>Pagamento</StyledParagraph>
+      {
+        isPayed
+          ? <></>
+          : <CardForm confirmPayment={confirmPayment} />
+      }
+      
     </>
   );
 }
