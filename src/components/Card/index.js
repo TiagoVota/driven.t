@@ -20,10 +20,6 @@ import InputCard from './InputCard';
 
 import styled from 'styled-components';
 
-import {
-  formatFormData
-} from './utils';
-
 const standardState = {
   cvc: '',
   expiry: '',
@@ -89,19 +85,11 @@ export default class CardForm extends React.Component {
     } = cvcValidation(cvc, cvcLength);
     if (!isValidCvc) return toast.error(cvcError);
 
-    const formData = [...event.target.elements]
-      .filter(d => d.name)
-      .reduce((acc, d) => {
-        acc[d.name] = d.value;
-        return acc;
-      }, {});
-
-    this.setState({ formData });
     this.props.confirmPayment();
   };
 
   render() {
-    const { name, number, expiry, cvc, inFocus, formData, issuer } = this.state;
+    const { name, number, expiry, cvc, inFocus, issuer } = this.state;
     const {
       mask: numberMask,
       example: numberExample
@@ -109,63 +97,114 @@ export default class CardForm extends React.Component {
     const cvcMask = cvcPattern(issuer).mask;
 
     return (
-      <div key='Payment'>
-        <Card
-          number={number}
-          name={name}
-          expiry={expiry}
-          cvc={cvc}
-          focused={inFocus}
-          callback={this.handleCallback}
-          required
-        />
-        <form onSubmit={this.handleSubmit}>
-          <InputCard
-            mask={numberMask}
-            type='tel'
-            name='number'
-            placeholder='Número do Cartão'
-            onChange={this.handleInputChange}
-            onFocus={this.handleInputFocus}
-          />
-          <span>{`Ex.: ${numberExample}`}</span>
-          <InputCard
-            type='text'
-            name='name'
-            placeholder='Nome'
-            onChange={this.handleInputChange}
-            onFocus={this.handleInputFocus}
-          />
-          <InputCard
-            mask='99/99'
-            type='tel'
-            name='expiry'
-            placeholder='Validade (MM/AA)'
-            onChange={this.handleInputChange}
-            onFocus={this.handleInputFocus}
-          />
-          <InputCard
-            mask={cvcMask}
-            type='tel'
-            name='cvc'
-            placeholder='CVC'
-            onChange={this.handleInputChange}
-            onFocus={this.handleInputFocus}
-          />
-
-          <Button type='submit'>
-            FINALIZAR PAGAMENTO
-          </Button>
-        </form>
-
-        {formData && (
-          <div className='App-highlight'>
-            {formatFormData(formData).map((d, i) => (
-              <div key={i}>{d}</div>
-            ))}
+      <Form onSubmit={this.handleSubmit}>
+        <CardWrapper>
+          <div>
+            <Card
+              number={number}
+              name={name}
+              expiry={expiry}
+              cvc={cvc}
+              focused={inFocus}
+              callback={this.handleCallback}
+            />
           </div>
-        )}
-      </div>
+
+          <InputsWrapper>
+            <InputCard
+              mask={numberMask}
+              type='tel'
+              name='number'
+              placeholder='Número do Cartão'
+              onChange={this.handleInputChange}
+              onFocus={this.handleInputFocus}
+              isFirst
+            />
+            <span>
+              {`Ex.: ${numberExample}`}
+            </span>
+
+            <InputCard
+              type='text'
+              name='name'
+              placeholder='Nome'
+              onChange={this.handleInputChange}
+              onFocus={this.handleInputFocus}
+            />
+
+            <ExpiryAndCvcWrapper>
+              <InputCard
+                mask='99/99'
+                type='tel'
+                name='expiry'
+                placeholder='Validade (MM/AA)'
+                onChange={this.handleInputChange}
+                onFocus={this.handleInputFocus}
+              />
+
+              <InputCard
+                width='40%'
+                mask={cvcMask}
+                type='tel'
+                name='cvc'
+                placeholder='CVC'
+                onChange={this.handleInputChange}
+                onFocus={this.handleInputFocus}
+              />
+            </ExpiryAndCvcWrapper>
+          </InputsWrapper>
+        </CardWrapper>
+
+        <Button type='submit'>
+          FINALIZAR PAGAMENTO
+        </Button>
+      </Form>
     );
   }
 }
+
+const Form = styled.form`
+  padding-bottom: 30px;
+`;
+
+const CardWrapper = styled.div`
+  width: 100%;
+  margin-bottom: 20px;
+
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: start;
+  }
+`;
+
+const InputsWrapper = styled.div`
+  width: 300px;
+  padding-left: 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  > span {
+    font-family: 'Roboto';
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 23px;
+    letter-spacing: 0em;
+    color: #8e8e8e;
+  }
+
+  @media (max-width: 600px) {
+    width: 290px;
+    margin-top: 15px;
+    padding: 0px;
+  }
+`;
+
+const ExpiryAndCvcWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+`;
