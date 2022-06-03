@@ -1,14 +1,22 @@
 import { useEffect, useContext, useState } from 'react';
 import styled from 'styled-components';
-import { getTicketPrice } from '../../../services/ticketApi';
-import UserContext from '../../../contexts/UserContext';
 import { toast } from 'react-toastify';
+
+import UserContext from '../../../contexts/UserContext';
+import useMakePayment from '../../../hooks/api/useMakePayment';
+
+import { getTicketPrice } from '../../../services/ticketApi';
+
 import CardForm from '../../../components/Card';
 
 export default function PaymentScreen() {
   const { userData } = useContext(UserContext);
-  const [ticket, setTicket] = useState();
-  const [isPayed, setIsPayed] = useState(false);
+  const [ticket, setTicket] = useState({});
+  const [isPayed, setIsPayed] = useState(true);
+  const {
+    makePaymentLoading,
+    makePayment,
+  } = useMakePayment();
 
   useEffect(() => {
     const userId = userData.user.id;
@@ -17,10 +25,19 @@ export default function PaymentScreen() {
     promise.catch((error) => toast('Não foi possível selecionar o ticket!'));
   }, []);
 
-  const confirmPayment = () => {
-    return setIsPayed(true);
+  const confirmPayment = (isPayed) => {
+    if (isPayed) setIsPayed(true);
   };
 
+  const formatTotalPrice = (ticketPrice) => {
+    const isNumber = Boolean(Number(ticketPrice));
+    if (!isNumber) ticketPrice = 0;
+
+    const totalToCents = Math.floor(ticketPrice * 100);
+
+    return totalToCents;
+  };
+  
   return (
     <>
       <StyledParagraph>Ingresso Escolhido</StyledParagraph>
@@ -35,12 +52,17 @@ export default function PaymentScreen() {
       {
         isPayed
           ? <></>
-          : <CardForm confirmPayment={confirmPayment} />
+          : <CardForm
+            confirmPayment={confirmPayment}
+            makePaymentLoading={makePaymentLoading}
+            makePayment={makePayment}
+            totalPrice={formatTotalPrice(ticket.price)}
+          />
       }
-      
     </>
   );
 }
+
 const StyledParagraph = styled.p`
   font-style: normal;
   font-weight: 400;
@@ -50,6 +72,7 @@ const StyledParagraph = styled.p`
 
   color: #8e8e8e;
 `;
+
 const SelectionContainer = styled.div`
   display: flex;
   align-items: center;

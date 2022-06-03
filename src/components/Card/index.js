@@ -54,9 +54,14 @@ export default class CardForm extends React.Component {
     this.setState({ [target.name]: target.value });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = async(event) => {
     event.preventDefault();
 
+    const {
+      totalPrice,
+      makePayment,
+      confirmPayment,
+    } = this.props;
     const { name, number, expiry, cvc, issuer, isValid } = this.state;
     const numberLength = numberPattern(issuer).length;
     const cvcLength = cvcPattern(issuer).length;
@@ -85,10 +90,26 @@ export default class CardForm extends React.Component {
     } = cvcValidation(cvc, cvcLength);
     if (!isValidCvc) return toast.error(cvcError);
 
-    this.props.confirmPayment();
+    const paymentBody = {
+      name,
+      number,
+      expiry,
+      cvc,
+      totalPrice: totalPrice,
+    };
+
+    try {
+      const paymentInfo = await makePayment(paymentBody);
+
+      toast('Pagamento realizado com sucesso');
+      return confirmPayment(paymentInfo.isPayed);
+    } catch (err) {
+      toast.error('Erro ao realizar pagamento!');
+    }
   };
 
   render() {
+    const disableButton = this.props.makePaymentLoading;
     const { name, number, expiry, cvc, inFocus, issuer } = this.state;
     const {
       mask: numberMask,
@@ -97,7 +118,7 @@ export default class CardForm extends React.Component {
     const cvcMask = cvcPattern(issuer).mask;
 
     return (
-      <Form onSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit} >
         <CardWrapper>
           <div>
             <Card
@@ -155,7 +176,7 @@ export default class CardForm extends React.Component {
           </InputsWrapper>
         </CardWrapper>
 
-        <Button type='submit'>
+        <Button type='submit' disabled={disableButton} >
           FINALIZAR PAGAMENTO
         </Button>
       </Form>
