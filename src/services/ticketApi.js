@@ -6,8 +6,9 @@ export async function createTicket({ userId, modalityId, token }) {
   return response.data;
 }
 
-export async function getTicketPrice(userId) {
-  const response = await api.post('/tickets/price', { userId });
+export async function getTicketPrice({ userId, token }) {
+  const config = HeaderConfig(token);
+  const response = await api.post('/tickets/price', { userId }, config);
   return response.data;
 }
 

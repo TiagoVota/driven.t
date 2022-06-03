@@ -4,48 +4,46 @@ import { toast } from 'react-toastify';
 
 import UserContext from '../../../contexts/UserContext';
 import useMakePayment from '../../../hooks/api/useMakePayment';
+import useToken from '../../../hooks/useToken';
 
 import { getTicketPrice } from '../../../services/ticketApi';
 
 import CardForm from '../../../components/Card';
 import SuccessPayment from './SuccessPayment';
+import { toBrazilianCurrency } from '../../../utils/currencyFormat';
 
 export default function PaymentScreen() {
+  const token = useToken();
   const { userData } = useContext(UserContext);
   const [ticket, setTicket] = useState({});
-  const [isPayed, setIsPayed] = useState(false);
   const {
     makePaymentLoading,
     makePayment,
   } = useMakePayment();
 
+  const isPayed = Boolean(ticket.isPayed);
+
   useEffect(() => {
     const userId = userData.user.id;
-    const promise = getTicketPrice(userId);
-    promise.then((response) => setTicket(response));
+    const promise = getTicketPrice({ userId, token });
+    promise.then((ticketData) => setTicket(ticketData));
     promise.catch((error) => toast('Não foi possível selecionar o ticket!'));
   }, []);
 
   const confirmPayment = (isPayed) => {
-    if (isPayed) setIsPayed(true);
+    if (isPayed) setTicket({
+      ...ticket,
+      isPayed,
+    });
   };
 
-  const formatTotalPrice = (ticketPrice) => {
-    const isNumber = Boolean(Number(ticketPrice));
-    if (!isNumber) ticketPrice = 0;
-
-    const totalToCents = Math.floor(ticketPrice * 100);
-
-    return totalToCents;
-  };
-  
   return (
     <>
       <StyledParagraph>Ingresso Escolhido</StyledParagraph>
       <SelectionContainer>
         <SelectDiv>
-          <Modality>{ticket?.name}</Modality>
-          <Price>R$ {ticket?.price}</Price>
+          <Modality>{ticket.name || 'Modalidade + Opção de hotel'}</Modality>
+          <Price>{toBrazilianCurrency(ticket.price || 0)}</Price>
         </SelectDiv>
       </SelectionContainer>
 
@@ -57,7 +55,7 @@ export default function PaymentScreen() {
             confirmPayment={confirmPayment}
             makePaymentLoading={makePaymentLoading}
             makePayment={makePayment}
-            totalPrice={formatTotalPrice(ticket.price)}
+            totalPrice={Number(ticket.price) || 0}
           />
       }
     </>
