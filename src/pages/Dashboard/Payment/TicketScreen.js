@@ -113,9 +113,8 @@ export default function TicketScreen(props) {
   async function handleTicketReservation(event) {
     event.preventDefault();
     try {
-      const userId = userData.user.id;
       const token = userData.token;
-      await createTicket({ modalityId, userId, token });
+      await createTicket({ modalityId, token });
       toast('Ticket reservado com sucesso!');
       props.changeScreen(false);
     } catch (err) {

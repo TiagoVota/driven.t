@@ -8,7 +8,7 @@ import GreyText from '../../../components/GreyText';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
-  const [ticketScreen, setTicketScreen] = useState(false);
+  const [ticketScreen, setTicketScreen] = useState(true);
 
   return (
     <>
