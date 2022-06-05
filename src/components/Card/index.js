@@ -104,9 +104,23 @@ export default class CardForm extends React.Component {
       toast('Pagamento realizado com sucesso');
       return confirmPayment(paymentInfo.isPayed);
     } catch (err) {
-      toast.error('Erro ao realizar pagamento!');
+      this.handleFailSubmit(err.status);
     }
   };
+
+  handleFailSubmit = (status) => {
+    const msgStatus = {
+      401: 'Não autorizado, tente fazer login novamente!',
+      404: 'Informações de ingresso não encontradas!',
+      409: 'Ingresso já pago!',
+      422: 'Campo(s) inválido(s)!',
+      500: 'Erro com nosso servidor, tente novamente mais tarde, por favor 🥺'
+    };
+
+    const msgToSend = msgStatus[status] || 'Problema com o servidor 🥺';
+
+    toast.error(msgToSend);
+  }
 
   render() {
     const disableButton = this.props.makePaymentLoading;
