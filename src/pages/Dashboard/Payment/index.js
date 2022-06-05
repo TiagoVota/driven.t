@@ -8,10 +8,11 @@ import GreyText from '../../../components/GreyText';
 
 export default function Payment() {
   const { enrollment } = useEnrollment();
-  const [ticketScreen, setTicketScreen] = useState(true);
+  const [ticketScreen, setTicketScreen] = useState(false);
+
   return (
     <>
-      <Title>Ingresso e pagamento </Title>
+      <Title>Ingresso e pagamento</Title>
       <Box center={enrollment}>
         {enrollment ? (
           ticketScreen ? (

@@ -1,32 +1,67 @@
 import { useEffect, useContext, useState } from 'react';
 import styled from 'styled-components';
-import { getTicketPrice } from '../../../services/ticketApi';
-import UserContext from '../../../contexts/UserContext';
 import { toast } from 'react-toastify';
 
+import UserContext from '../../../contexts/UserContext';
+import useMakePayment from '../../../hooks/api/useMakePayment';
+import useToken from '../../../hooks/useToken';
+
+import { getTicketPrice } from '../../../services/ticketApi';
+
+import CardForm from '../../../components/Card';
+import SuccessPayment from './SuccessPayment';
+import { toBrazilianCurrency } from '../../../utils/currencyFormat';
+
 export default function PaymentScreen() {
+  const token = useToken();
   const { userData } = useContext(UserContext);
-  const [ticket, setTicket] = useState();
+  const [ticket, setTicket] = useState({});
+  const {
+    makePaymentLoading,
+    makePayment,
+  } = useMakePayment();
+
+  const isPayed = Boolean(ticket.isPayed);
 
   useEffect(() => {
     const userId = userData.user.id;
-    const promise = getTicketPrice(userId);
-    promise.then((response) => setTicket(response));
-    promise.catch((error) => toast('Não foi possível selectionar o ticket!'));
+    const promise = getTicketPrice({ userId, token });
+    promise.then((ticketData) => setTicket(ticketData));
+    promise.catch((error) => toast('Não foi possível selecionar o ticket!'));
   }, []);
+
+  const confirmPayment = (isPayed) => {
+    if (isPayed) setTicket({
+      ...ticket,
+      isPayed,
+    });
+  };
 
   return (
     <>
       <StyledParagraph>Ingresso Escolhido</StyledParagraph>
       <SelectionContainer>
         <SelectDiv>
-          <Modality>{ticket?.name}</Modality>
-          <Price>R$ {ticket?.price}</Price>
+          <Modality>{ticket.name || 'Modalidade + Opção de hotel'}</Modality>
+          <Price>{toBrazilianCurrency(ticket.price || 0)}</Price>
         </SelectDiv>
       </SelectionContainer>
+
+      <StyledParagraph>Pagamento</StyledParagraph>
+      {
+        isPayed
+          ? <SuccessPayment />
+          : <CardForm
+            confirmPayment={confirmPayment}
+            makePaymentLoading={makePaymentLoading}
+            makePayment={makePayment}
+            totalPrice={Number(ticket.price) || 0}
+          />
+      }
     </>
   );
 }
+
 const StyledParagraph = styled.p`
   font-style: normal;
   font-weight: 400;
@@ -36,6 +71,7 @@ const StyledParagraph = styled.p`
 
   color: #8e8e8e;
 `;
+
 const SelectionContainer = styled.div`
   display: flex;
   align-items: center;
