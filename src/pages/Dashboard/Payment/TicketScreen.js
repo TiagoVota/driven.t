@@ -24,7 +24,7 @@ export default function TicketScreen(props) {
   useEffect(() => {
     async function checkIfUserHasATicket() {
       try {
-        const status = await getTicketByUser(userData.user.id);
+        const status = await getTicketByUser(userData.token);
         if (status === 200) props.changeScreen(false);
       } catch (err) {
         console.log(err);
