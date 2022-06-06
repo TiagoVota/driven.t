@@ -12,11 +12,11 @@ export async function getTicketPrice({ userId, token }) {
   return response.data;
 }
 
-// export async function getTicketByUser(token) {
-//   const config = HeaderConfig(token);
-//   const response = await api.get('/tickets', config);
-//   return response.status;
-// }
+export async function getTicketByUser(token) {
+  const config = HeaderConfig(token);
+  const response = await api.get('/tickets', config);
+  return response.status;
+}
 
 export async function getTicket(token) {
   const response = await api.get('/tickets', HeaderConfig(token));
