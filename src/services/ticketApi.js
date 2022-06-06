@@ -1,8 +1,8 @@
 import api, { HeaderConfig } from './api';
 
-export async function createTicket({ userId, modalityId, token }) {
+export async function createTicket({ modalityId, token }) {
   const config = HeaderConfig(token);
-  const response = await api.post('/tickets', { modalityId, userId }, config);
+  const response = await api.post('/tickets', { modalityId }, config);
   return response.data;
 }
 
