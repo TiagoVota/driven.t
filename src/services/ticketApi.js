@@ -12,8 +12,9 @@ export async function getTicketPrice({ userId, token }) {
   return response.data;
 }
 
-export async function getTicketByUser(userId) {
-  const response = await api.get(`/tickets/${userId}`);
+export async function getTicketByUser(token) {
+  const config = HeaderConfig(token);
+  const response = await api.get('/tickets', config);
   return response.status;
 }
 //
