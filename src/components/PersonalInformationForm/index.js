@@ -34,10 +34,14 @@ export default function PersonalInformationForm() {
     validations: FormValidations,
 
     onSubmit: async(data) => {
+      const birthday = Boolean(data.birthday)
+        ? dayjs(data.birthday).toISOString()
+        : dayjs().toISOString();
+      
       const newData = {
         name: data.name,
         cpf: data.cpf.replaceAll('.', '').replaceAll('-', ''),
-        birthday: dayjs(data.birthday).toISOString(),
+        birthday,
         address: {
           cep: data.cep,
           street: data.street,

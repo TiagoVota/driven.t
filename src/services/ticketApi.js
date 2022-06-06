@@ -1,17 +1,25 @@
 import api, { HeaderConfig } from './api';
 
-export async function createTicket({ userId, modalityId }) {
-  const response = await api.post('/tickets', { modalityId, userId });
+export async function createTicket({ modalityId, token }) {
+  const config = HeaderConfig(token);
+  const response = await api.post('/tickets', { modalityId }, config);
   return response.data;
 }
+
+export async function getTicketPrice({ userId, token }) {
+  const config = HeaderConfig(token);
+  const response = await api.post('/tickets/price', { userId }, config);
+  return response.data;
+}
+
+// export async function getTicketByUser(token) {
+//   const config = HeaderConfig(token);
+//   const response = await api.get('/tickets', config);
+//   return response.status;
+// }
 
 export async function getTicket(token) {
   const response = await api.get('/tickets', HeaderConfig(token));
-  return response.data;
-}
-
-export async function getTicketPrice(userId) {
-  const response = await api.post('/tickets/price', { userId });
   return response.data;
 }
 //
