@@ -17,4 +17,9 @@ export async function getTicketByUser(token) {
   const response = await api.get('/tickets', config);
   return response.status;
 }
+
+export async function getTicket(token) {
+  const response = await api.get('/tickets', HeaderConfig(token));
+  return response.data;
+}
 //

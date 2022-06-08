@@ -8,3 +8,9 @@ export async function makePayment(body, token) {
 
   return response.data;
 }
+
+export async function findPayment(token) {
+  const response = await api.get(PAYMENT_URL, makeConfig(token));
+
+  return response.data;
+}
