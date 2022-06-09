@@ -1,145 +1,138 @@
+import { FormWrapper } from '../../../components/PersonalInformationForm/FormWrapper';
+import Button from '../../../components/Form/Button.js';
 import styled from 'styled-components';
 import { BsPerson, BsPersonFill } from 'react-icons/bs';
+import { useEffect, useState } from 'react';
+import { getRooms } from '../../../services/roomApi';
+import { toast } from 'react-toastify';
+import useToken from '../../../hooks/useToken';
 
 export default function Rooms() {
-  const roomsArray = [
-    {
-      id: 17,
-      name: '100',
-      hotelId: 19,
-      capacity: 3,
-      availableSlots: 2,
-    },
-    {
-      id: 18,
-      name: '101',
-      hotelId: 19,
-      capacity: 1,
-      availableSlots: 1,
-    },
-    {
-      id: 19,
-      name: '102',
-      hotelId: 19,
-      capacity: 1,
-      availableSlots: 1,
-    },
-    {
-      id: 20,
-      name: '103',
-      hotelId: 19,
-      capacity: 1,
-      availableSlots: 1,
-    },
-    {
-      id: 21,
-      name: '104',
-      hotelId: 19,
-      capacity: 2,
-      availableSlots: 2,
-    },
-    {
-      id: 22,
-      name: '105',
-      hotelId: 19,
-      capacity: 1,
-      availableSlots: 1,
-    },
-    {
-      id: 23,
-      name: '106',
-      hotelId: 19,
-      capacity: 3,
-      availableSlots: 3,
-    },
-    {
-      id: 24,
-      name: '107',
-      hotelId: 19,
-      capacity: 3,
-      availableSlots: 3,
-    },
-    {
-      id: 25,
-      name: '108',
-      hotelId: 19,
-      capacity: 1,
-      availableSlots: 1,
-    },
-    {
-      id: 26,
-      name: '109',
-      hotelId: 19,
-      capacity: 2,
-      availableSlots: 2,
-    },
-    {
-      id: 27,
-      name: '110',
-      hotelId: 19,
-      capacity: 2,
-      availableSlots: 2,
-    },
-    {
-      id: 28,
-      name: '111',
-      hotelId: 19,
-      capacity: 2,
-      availableSlots: 2,
-    },
-    {
-      id: 29,
-      name: '112',
-      hotelId: 19,
-      capacity: 2,
-      availableSlots: 2,
-    },
-    {
-      id: 30,
-      name: '113',
-      hotelId: 19,
-      capacity: 2,
-      availableSlots: 2,
-    },
-    {
-      id: 31,
-      name: '114',
-      hotelId: 19,
-      capacity: 3,
-      availableSlots: 3,
-    },
-    {
-      id: 32,
-      name: '115',
-      hotelId: 19,
-      capacity: 2,
-      availableSlots: 2,
-    },
-  ];
+  const token = useToken();
+
+  const [hotelId, setHotelId] = useState(1);
+  const [roomsArray, setRoomsArray] = useState();
+  const [selectedRoom, setSelectedRoom] = useState();
+
+  useEffect(() => {
+    async function fillRoomsArray() {
+      try {
+        const response = await getRooms(hotelId, token);
+        setRoomsArray(addIsSelectedKey(response));
+      } catch (err) {
+        toast('Erro ao carregar opções de quarto');
+      }
+    }
+
+    fillRoomsArray();
+  }, []);
+
+  function handleReservation() {
+    return;
+  }
+
+  function addIsSelectedKey(array) {
+    return array.map((obj) => ({ ...obj, isSelected: false }));
+  }
+
+  function roomSelection(room) {
+    if (room.availableSlots === 0) return;
+
+    setRoomsArray(() => {
+      for (let i = 0; i < roomsArray.length; i++) {
+        if (roomsArray[i].id === room.id) {
+          roomsArray[i].isSelected = true;
+        } else {
+          roomsArray[i].isSelected = false;
+        }
+      }
+      return [...roomsArray];
+    });
+
+    setSelectedRoom(room.id);
+  }
+
+  if (!roomsArray) {
+    return 'Carregando...';
+  }
 
   return (
-    <RoomsContainer className="teste">
-      {roomsArray.map((room) => {
-        return (
-          <Room key={room.id}>
-            <Name>{room.name}</Name>
-            <Capacity>
-              {Array.from({ length: room.capacity }).map((item) => {
-                return <BsPerson />;
-              })}
-            </Capacity>
-          </Room>
-        );
-      })}
-    </RoomsContainer>
+    <Container>
+      {roomsArray.length === 0 ? (
+        <StyledParagraph>Não temos quartos disponíveis nesse hotel</StyledParagraph>
+      ) : (
+        <>
+          <StyledParagraph>Ótima pedida! Agora escolha seu quarto:</StyledParagraph>
+          <RoomsContainer>
+            {roomsArray.map((room) => {
+              return (
+                <Room
+                  key={room.id}
+                  onClick={() => roomSelection(room)}
+                  isSelected={room.isSelected}
+                  isFull={room.availableSlots === 0}
+                >
+                  <Name isFull={room.availableSlots === 0}>{room.name}</Name>
+                  <Capacity isFull={room.availableSlots === 0} isSelected={room.isSelected}>
+                    {room.isSelected ? (
+                      <>
+                        {Array.from({ length: room.availableSlots - 1 }, (v, k) => k).map((number) => {
+                          return <BsPerson key={number} />;
+                        })}
+                        <BsPersonFill className="icon-selected" />
+                        {Array.from({ length: room.capacity - room.availableSlots }, (v, k) => k).map((number) => {
+                          return <BsPersonFill key={number} />;
+                        })}
+                      </>
+                    ) : (
+                      <>
+                        {Array.from({ length: room.availableSlots }, (v, k) => k).map((number) => {
+                          return <BsPerson key={number} />;
+                        })}
+                        {Array.from({ length: room.capacity - room.availableSlots }, (v, k) => k).map((number) => {
+                          return <BsPersonFill key={number} />;
+                        })}
+                      </>
+                    )}
+                  </Capacity>
+                </Room>
+              );
+            })}
+          </RoomsContainer>
+          <FormWrapper>
+            <Button onClick={() => handleReservation()}>Reservar Quarto</Button>
+          </FormWrapper>
+        </>
+      )}
+    </Container>
   );
 }
+
+const Container = styled.div`
+  align-self: flex-start;
+`;
+
+const StyledParagraph = styled.p`
+  width: 100%;
+
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 23px;
+
+  color: #8e8e8e;
+
+  margin-bottom: 30px;
+`;
 
 const RoomsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-column-gap: 15px;
   grid-row-gap: 10px;
+
+  margin-bottom: 37px;
 `;
 
 const Room = styled.div`
@@ -154,6 +147,9 @@ const Room = styled.div`
 
   border: 1px solid #cecece;
   border-radius: 10px;
+  position: relative;
+
+  background: ${(props) => (props.isFull ? '#E9E9E9' : props.isSelected ? '#ffeed2' : '')};
 
   cursor: pointer;
 `;
@@ -166,7 +162,7 @@ const Name = styled.p`
   line-height: 23px;
   text-align: center;
 
-  color: #454545;
+  color: ${(props) => (props.isFull ? '#9D9D9D' : '#454545')};
 `;
 
 const Capacity = styled.div`
@@ -175,5 +171,9 @@ const Capacity = styled.div`
   display: flex;
   align-items: center;
 
-  color: #000000;
+  color: ${(props) => (props.isFull ? '#8C8C8C' : '#000000')};
+
+  .icon-selected {
+    color: #ff4791;
+  }
 `;
