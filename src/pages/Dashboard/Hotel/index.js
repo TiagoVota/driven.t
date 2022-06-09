@@ -1,11 +1,11 @@
 import { getTicket } from '../../../hooks/api/useTicket';
 
-// import Title from '../../../components/Title';
-// import Box from '../../../components/Box';
-// import GreyText from '../../../components/GreyText';
+import Title from '../../../components/Title';
+import Box from '../../../components/Box';
+import GreyText from '../../../components/GreyText';
 import usePayment from '../../../hooks/api/usePayment';
 import { useEffect, useState } from 'react';
-import ChageHotel from './changeRoom';
+import HotelSelection from './HotelSelection';
 
 export default function Hotel() {
   const { ticket, getTicketLoading } = getTicket();
@@ -19,24 +19,23 @@ export default function Hotel() {
   if (getTicketLoading) {
     return 'Loading...';
   }
-  return <ChageHotel/>;
 
-  // return (
-  //   <>
-  //     <Title>Escolha de hotel e quarto</Title>
-  //     <Box>
-  //       {payment ? (
-  //         modality === 'Online' && (
-  //           <GreyText width="200">
-  //             Sua modalidade de ingresso não inclui hospedagem
-  //             {<br></br>}
-  //             Prossiga para a escolha de atividades
-  //           </GreyText>
-  //         )
-  //       ) : (
-  //         <GreyText width="200">Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</GreyText>
-  //       )}
-  //     </Box>
-  //   </>
-  // );
+  return (
+    <>
+      <Title>Escolha de hotel e quarto</Title>
+      <Box >
+        {payment ? (
+          modality === 'Online' ? (
+            <GreyText width="200">
+              Sua modalidade de ingresso não inclui hospedagem
+              {<br></br>}
+              Prossiga para a escolha de atividades
+            </GreyText>
+          ) : <HotelSelection />
+        ) : (
+          <GreyText width="200">Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</GreyText>
+        )}
+      </Box>
+    </>
+  );
 }
