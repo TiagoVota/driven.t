@@ -5,6 +5,7 @@ import Box from '../../../components/Box';
 import GreyText from '../../../components/GreyText';
 import usePayment from '../../../hooks/api/usePayment';
 import { useEffect, useState } from 'react';
+import HotelSelection from './HotelSelection';
 
 export default function Hotel() {
   const { ticket, getTicketLoading } = getTicket();
@@ -22,15 +23,15 @@ export default function Hotel() {
   return (
     <>
       <Title>Escolha de hotel e quarto</Title>
-      <Box>
+      <Box center="left">
         {payment ? (
-          modality === 'Online' && (
+          modality === 'Online' ? (
             <GreyText width="200">
               Sua modalidade de ingresso não inclui hospedagem
               {<br></br>}
               Prossiga para a escolha de atividades
             </GreyText>
-          )
+          ) : <HotelSelection />
         ) : (
           <GreyText width="200">Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</GreyText>
         )}
