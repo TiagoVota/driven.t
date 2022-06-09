@@ -23,7 +23,7 @@ export default function Hotel() {
   return (
     <>
       <Title>Escolha de hotel e quarto</Title>
-      <Box center="left">
+      <Box >
         {payment ? (
           modality === 'Online' ? (
             <GreyText width="200">

@@ -1,6 +1,7 @@
 import GreyText from '../../../components/GreyText';
 import HotelCard from '../../../components/Hotel/HotelCard';
 import HotelContainer from '../../../components/Hotel/HotelContainer';
+import Box from '../../../components/Box';
 
 export default function HotelSelection() {
   const MockDBResponse = [
@@ -32,7 +33,7 @@ export default function HotelSelection() {
 
   //   OS TIPOS (single, double...) PODEM VIR DO FRONT, SO FIZ O MOCK PRA TESTAR O CSS
   return (
-    <>
+    <Box center="left">
       <GreyText width="400px" align="left">
         Primeiro, escolha seu hotel
       </GreyText>
@@ -48,6 +49,6 @@ export default function HotelSelection() {
           </HotelCard>
         ))}
       </HotelContainer>
-    </>
+    </Box>
   );
 }
