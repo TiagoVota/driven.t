@@ -4,7 +4,7 @@ import HotelSelection from './HotelSelection';
 import RoomSummary from './RoomSummary';
 
 export default function RoomSelectionOrSummary() {
-  const [isSelectionRoomPage, setIsSelectionRoomPage] = useState(true);
+  const [isSelectionRoomPage, setIsSelectionRoomPage] = useState(false);
 
   function changeToSelectHotel() {
     setIsSelectionRoomPage(true);

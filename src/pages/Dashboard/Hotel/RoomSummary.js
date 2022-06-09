@@ -29,10 +29,9 @@ export default function RoomSummary({ changePage }) {
   } = userRoom;
 
   function makePeopleInRoomStr(occupation) {
-    let outputStr = 'Você';
-    if (occupation === 1) return outputStr;
+    if (occupation === 1) return 'Somente você';
 
-    return `${outputStr} e mais ${occupation - 1}`;
+    return `Você e mais ${occupation - 1}`;
   }
 
   function handleChangeRoom() {
