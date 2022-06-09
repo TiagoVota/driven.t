@@ -7,7 +7,8 @@ const GreyText = styled.p`
   font-weight: 400;
   line-height: 23px;
   letter-spacing: 0em;
-  text-align: center;
+  text-align: ${(props) => props.align || 'center'};
+
   color: #8e8e8e;
 `;
 
