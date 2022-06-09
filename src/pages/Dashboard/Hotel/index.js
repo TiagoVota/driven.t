@@ -6,15 +6,17 @@ import GreyText from '../../../components/GreyText';
 import usePayment from '../../../hooks/api/usePayment';
 import { useEffect, useState } from 'react';
 
+import Rooms from './Rooms';
+
 export default function Hotel() {
   const { ticket, getTicketLoading } = getTicket();
   const { payment } = usePayment();
   const [modality, setModality] = useState(null);
-  
+
   useEffect(() => {
-    if(!getTicketLoading) setModality(ticket.Modality.name);
+    if (!getTicketLoading) setModality(ticket.Modality.name);
   }, []);
-  
+
   if (getTicketLoading) {
     return 'Loading...';
   }
@@ -32,7 +34,8 @@ export default function Hotel() {
             </GreyText>
           )
         ) : (
-          <GreyText width="200">Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</GreyText>
+          <Rooms />
+          // <GreyText width="200">Você precisa ter confirmado pagamento antes de fazer a escolha de hospedagem</GreyText>
         )}
       </Box>
     </>
