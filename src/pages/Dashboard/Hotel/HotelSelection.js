@@ -12,6 +12,7 @@ import Rooms from './Rooms';
 export default function HotelSelection({ changePage }) {
   const [hotels, setHotels] = useState([]);
   const [selectedHotel, setSelectedHotel] = useState(0);
+  const [selectedRoom, setSelectedRoom] = useState(null);
   const [roomsArray, setRoomsArray] = useState();
   const [showRooms, setShowRooms] = useState(false);
   const token = useToken();
@@ -24,6 +25,7 @@ export default function HotelSelection({ changePage }) {
 
   function handleHotelSelection(hotelId) {
     setSelectedHotel(hotelId);
+    setSelectedRoom(null);
     setShowRooms(true);
     fillRoomsArray(hotelId);
   }
@@ -65,7 +67,15 @@ export default function HotelSelection({ changePage }) {
           ))}
         </HotelContainer>
       </Box>
-      {showRooms && <Rooms roomsArray={roomsArray} setRoomsArray={setRoomsArray} changePage={changePage} />}
+      {showRooms && (
+        <Rooms
+          roomsArray={roomsArray}
+          setRoomsArray={setRoomsArray}
+          selectedRoom={selectedRoom}
+          setSelectedRoom={setSelectedRoom}
+          changePage={changePage}
+        />
+      )}
     </>
   );
 }
