@@ -4,7 +4,7 @@ import HotelSelection from './HotelSelection';
 import RoomSummary from './RoomSummary';
 
 export default function RoomSelectionOrSummary() {
-  const [isSelectionRoomPage, setIsSelectionRoomPage] = useState(false);
+  const [isSelectionRoomPage, setIsSelectionRoomPage] = useState(true);
 
   function changeToSelectHotel() {
     setIsSelectionRoomPage(true);
@@ -14,11 +14,11 @@ export default function RoomSelectionOrSummary() {
   }
   return (
     <>
-      {
-        isSelectionRoomPage
-          ? <HotelSelection changePage={changeToRoomSummary} />  // Se quiser pode usar essa função ao final do botão de reservar quarto!
-          : <RoomSummary changePage={changeToSelectHotel} />
-      }
+      {isSelectionRoomPage ? (
+        <HotelSelection changePage={changeToRoomSummary} />
+      ) : (
+        <RoomSummary changePage={changeToSelectHotel} />
+      )}
     </>
   );
 }

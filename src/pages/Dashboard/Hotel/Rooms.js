@@ -2,37 +2,16 @@ import { FormWrapper } from '../../../components/PersonalInformationForm/FormWra
 import Button from '../../../components/Form/Button.js';
 import styled from 'styled-components';
 import { BsPerson, BsPersonFill } from 'react-icons/bs';
-import { useEffect, useState } from 'react';
-import { getRooms } from '../../../services/roomApi';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
-import useToken from '../../../hooks/useToken';
 
-export default function Rooms() {
-  const token = useToken();
-
-  const [hotelId, setHotelId] = useState(1);
-  const [roomsArray, setRoomsArray] = useState();
-  const [selectedRoom, setSelectedRoom] = useState();
-
-  useEffect(() => {
-    async function fillRoomsArray() {
-      try {
-        const response = await getRooms(hotelId, token);
-        setRoomsArray(addIsSelectedKey(response));
-      } catch (err) {
-        toast('Erro ao carregar opções de quarto');
-      }
-    }
-
-    fillRoomsArray();
-  }, []);
+export default function Rooms({ roomsArray, setRoomsArray, changePage }) {
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   function handleReservation() {
-    return;
-  }
+    if (selectedRoom === null) return toast('Selecione um quarto!');
 
-  function addIsSelectedKey(array) {
-    return array.map((obj) => ({ ...obj, isSelected: false }));
+    changePage(false);
   }
 
   function roomSelection(room) {
@@ -110,6 +89,8 @@ export default function Rooms() {
 
 const Container = styled.div`
   align-self: flex-start;
+
+  padding: 50px 0;
 `;
 
 const StyledParagraph = styled.p`
