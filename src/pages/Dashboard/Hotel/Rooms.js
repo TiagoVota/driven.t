@@ -2,16 +2,24 @@ import { FormWrapper } from '../../../components/PersonalInformationForm/FormWra
 import Button from '../../../components/Form/Button.js';
 import styled from 'styled-components';
 import { BsPerson, BsPersonFill } from 'react-icons/bs';
-import { useState } from 'react';
+import { reservateRoom } from '../../../services/roomApi';
 import { toast } from 'react-toastify';
+import useToken from '../../../hooks/useToken';
 
-export default function Rooms({ roomsArray, setRoomsArray, changePage }) {
-  const [selectedRoom, setSelectedRoom] = useState(null);
+export default function Rooms({ roomsArray, setRoomsArray, selectedRoom, setSelectedRoom, changePage }) {
+  const token = useToken();
 
-  function handleReservation() {
+  async function handleReservation() {
     if (selectedRoom === null) return toast('Selecione um quarto!');
 
-    changePage(false);
+    try {
+      await reservateRoom(selectedRoom, token);
+      toast('Quarto reservado!');
+      changePage(false);
+      return;
+    } catch (err) {
+      toast('Não foi possível reservar o quarto selecionado!');
+    }
   }
 
   function roomSelection(room) {
