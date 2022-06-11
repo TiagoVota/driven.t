@@ -7,6 +7,7 @@ const HotelContainer = styled.div`
   margin-top: 18px;
   width: 100%;
   gap: 19px;
+  cursor: pointer;
 `;
 
 export default HotelContainer;
