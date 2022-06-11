@@ -16,6 +16,8 @@ import useSignIn from '../../hooks/api/useSignIn';
 
 import axios from 'axios';
 
+import GitButton from '../../components/githubButton';
+
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,7 +40,8 @@ export default function SignIn() {
       axios
         .post('http://localhost:4000/oauth/github/login', { code })
         .then((res) => {
-          //localStorage.setItem('token', res.data.token);
+          setUserData(res.data);
+          navigate('/dashboard');
         })
         .catch((error) => {
           toast('Desculpe, você não pode fazer este login com as configuração de email privado no github');
@@ -82,7 +85,9 @@ export default function SignIn() {
             Entrar
           </Button>
         </form>
-        <a alt="erro" href={githubUrl}>Login com o github</a>
+        <GitButton alt='erro' href={githubUrl}>
+            Logar com GitHub
+        </GitButton>
       </Row>
       <Row>
         <Link to="/enroll">Não possui login? Inscreva-se</Link>
