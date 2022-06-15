@@ -21,7 +21,7 @@ export default function Payment() {
             <PaymentScreen />
           )
         ) : (
-          <GreyText width="200">
+          <GreyText width="true">
             Você precisa completar sua inscrição antes de prosseguir pra escolha de ingresso
           </GreyText>
         )}

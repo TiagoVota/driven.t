@@ -14,6 +14,7 @@ const GitButton = styled.a`
   text-decoration: none;
 
   display: flex;
+  justify-content: center;
   align-items: center;
 
   background-color: black;
