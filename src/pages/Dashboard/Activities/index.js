@@ -21,7 +21,7 @@ export default function Activities() {
   useEffect(() => {
     const promise = getEventDays(token);
     promise.then((eventDaysData) => setDays(eventDaysData));
-    promise.catch((error) => toast('Não foi possível encontrar os dias dos eventos'));
+    promise.catch((error) => toast('Não foi possível encontrar os dias do evento'));
   }, []);
 
   if (getTicketLoading) {
