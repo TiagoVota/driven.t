@@ -24,14 +24,6 @@ export default function Activities() {
     promise.catch((error) => toast('Não foi possível encontrar os dias dos eventos'));
   }, []);
 
-  console.log(selectedDay);
-  function handleDaySelection(dayId) {
-    if (selectedDay === dayId) {
-      return;
-    }
-    setSelectedDay(dayId);
-  }
-
   if (getTicketLoading) {
     return 'Carregando...';
   }
