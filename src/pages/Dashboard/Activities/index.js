@@ -10,6 +10,7 @@ import { getEventDays } from '../../../services/eventDayApi';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import useToken from '../../../hooks/useToken';
+import Locations from './Locations';
 
 export default function Activities() {
   const { ticket, getTicketLoading } = getTicket();
@@ -17,6 +18,7 @@ export default function Activities() {
   const token = useToken();
   const [days, setDays] = useState([]);
   const [selectedDay, setSelectedDay] = useState(0);
+  const [locations, setLocations] = useState();
 
   useEffect(() => {
     const promise = getEventDays(token);
@@ -41,18 +43,22 @@ export default function Activities() {
             </Box>
           ) : (
             <>
-              <GreyText align="left">Primeiro, filtre pelo dia do evento: </GreyText>
+              {!selectedDay && <GreyText align="left">Primeiro, filtre pelo dia do evento: </GreyText>}
               <DaySelectionContainer>
                 {days.map((day) => (
                   <DaySelectionButton
                     selected={selectedDay === day.id}
                     key={day.id}
-                    onClick={(e) => setSelectedDay(day.id)}
+                    onClick={(e) => {
+                      setSelectedDay(day.id);
+                      setLocations(day.location);
+                    }}
                   >
                     {day.day}
                   </DaySelectionButton>
                 ))}
               </DaySelectionContainer>
+              <Locations locations={locations} />
             </>
           )
         ) : (
