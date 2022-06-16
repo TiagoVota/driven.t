@@ -103,6 +103,8 @@ const GridContainer = styled.div`
   grid-template-columns: 1fr;
   grid-auto-flow: dense;
   grid-auto-rows: 20px;
+
+  overflow: auto;
 `;
 
 const Activity = styled.div`
