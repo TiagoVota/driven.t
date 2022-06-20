@@ -20,7 +20,7 @@ export default function HotelSelection({ changePage }) {
   useEffect(() => {
     const promise = getHotels({ token });
     promise.then((hotelsData) => setHotels(hotelsData));
-    promise.catch((error) => toast('Não foi possível encontrar os hoteis!'));
+    promise.catch((error) => toast('Não foi possível encontrar os hotéis!'));
   }, []);
 
   function handleHotelSelection(hotelId) {

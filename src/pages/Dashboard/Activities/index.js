@@ -1,16 +1,19 @@
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import usePayment from '../../../hooks/api/usePayment';
+import useToken from '../../../hooks/useToken';
+import { getTicket } from '../../../hooks/api/useTicket';
+
+import { getEventDays } from '../../../services/eventDayApi';
+
+import Locations from './Locations';
+
+import DaySelectionContainer from '../../../components/Activities/DaySelectionContainer';
+import DaySelectionButton from '../../../components/Activities/DaySelectionButton';
 import Title from '../../../components/Title';
 import GreyText from '../../../components/GreyText';
 import Box from '../../../components/Box';
-
-import { getTicket } from '../../../hooks/api/useTicket';
-import usePayment from '../../../hooks/api/usePayment';
-import DaySelectionContainer from '../../../components/Activities/DaySelectionContainer';
-import DaySelectionButton from '../../../components/Activities/DaySelectionButton';
-import { getEventDays } from '../../../services/eventDayApi';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import useToken from '../../../hooks/useToken';
-import Locations from './Locations';
 
 export default function Activities() {
   const { ticket, getTicketLoading } = getTicket();
