@@ -9,6 +9,10 @@ import Box from '../../../components/Box';
 export default function Hotel() {
   const { ticket, getTicketLoading } = getTicket();
   const { payment } = usePayment();
+  const isOnline = Boolean(ticket?.Modality?.name === 'Online');
+  const haveHotel = Boolean(ticket?.Modality?.HotelOption?.isWanted);
+
+  console.log({ ticket });
 
   if (getTicketLoading) {
     return 'Carregando...';
@@ -19,7 +23,7 @@ export default function Hotel() {
       <Title>Escolha de hotel e quarto</Title>
       <>
         {payment ? (
-          ticket.Modality.name === 'Online' ? (
+          isOnline || !haveHotel ? (
             <Box center={false}>
               <GreyText >
               Sua modalidade de ingresso não inclui hospedagem
