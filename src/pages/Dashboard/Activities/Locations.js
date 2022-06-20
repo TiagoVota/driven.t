@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import GreyText from '../../../components/GreyText';
 import Activity from './Activity';
 
-export default function Locations({ locations }) {
-  async function chooseActivity(activity) {
-    if (activity.capacity <= activity.occupation) return;
-    console.log(activity.id);
-  }
+export default function Locations(params) {
+  const {
+    locations,
+    handleActivityClick,
+    isSelectedActivity,
+  } = params;
 
   if (!locations) {
     return <></>;
@@ -26,8 +27,8 @@ export default function Locations({ locations }) {
                     <Activity
                       key={activity.id}
                       activityInfo={activity}
-                      isSelected={[].includes(activity.id)}
-                      onClick={() => chooseActivity(activity)}
+                      isSelected={isSelectedActivity(activity.id)}
+                      onClick={() => handleActivityClick(activity)}
                     />
                   );
                 })}
