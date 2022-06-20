@@ -9,7 +9,7 @@ import styled from 'styled-components';
 export default function ActivityStatus({ isSelected, vacancy }) {
   if (isSelected) {
     return (
-      <Container color={'green'} >
+      <Container color={'green'} isSelected >
         <IoCheckmarkCircleOutline />
         <Status>
           Inscrito
@@ -48,17 +48,16 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  border-left: 1px solid #CFCFCF;
-
+  border-left: 1px solid ${p => p.isSelected ? '#99E8A1' : '#CFCFCF'};
   > svg {
     font-size: 20px;
-    color: ${p => (p.color === 'green' ? '#078632' : '#CC6666')};
+    color: ${p => (p.color === 'green') ? '#078632' : '#CC6666'};
 
     margin-right: 5px;
   }
 
   > p {
-    color: ${p => (p.color === 'green' ? '#078632' : '#CC6666')};
+    color: ${p => (p.color === 'green') ? '#078632' : '#CC6666'};
   }
 `;
 

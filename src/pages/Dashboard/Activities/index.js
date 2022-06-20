@@ -7,6 +7,7 @@ import useRegisterActivity from '../../../hooks/api/useRegisterActivity';
 import { getTicket } from '../../../hooks/api/useTicket';
 
 import { getEventDays } from '../../../services/eventDayApi';
+import { isValidActivityTime } from './helpers/activityClickHelper';
 
 import Locations from './Locations';
 
@@ -19,33 +20,29 @@ import Box from '../../../components/Box';
 export default function Activities() {
   const { ticket, getTicketLoading } = getTicket();
   const { payment } = usePayment();
+  const { registerActivityLoading, registerActivity } = useRegisterActivity();
   const token = useToken();
   const [days, setDays] = useState([]);
   const [userActivities, setUserActivities] = useState([]);
   const [selectedDay, setSelectedDay] = useState(0);
   const [locations, setLocations] = useState();
-  const {
-    registerActivityLoading,
-    registerActivity,
-  } = useRegisterActivity();
 
   useEffect(() => {
     const promise = getEventDays(token);
     promise.then((eventDaysData) => {
       setDays(eventDaysData.days);
-      setUserActivities(eventDaysData.userActivityIds);
+      setUserActivities(eventDaysData.userActivities);
     });
     promise.catch((error) => toast('Não foi possível encontrar as informações do evento'));
   }, []);
 
   async function handleActivityClick(activity) {
     if (registerActivityLoading) return;
-
     if (activity.capacity <= activity.occupation) return;
-
     if (isSelectedActivity(activity.id)) return;
+    if (!isValidActivityTime(activity, userActivities)) return;
 
-    addUserActivity(activity.id);
+    addUserActivity(activity);
     try {
       await registerActivity(activity.id);
     } catch (err) {
@@ -55,18 +52,18 @@ export default function Activities() {
     }
   }
 
-  function addUserActivity(activityId) {
-    setUserActivities([ ...userActivities, activityId]);
+  function addUserActivity(activity) {
+    setUserActivities([ ...userActivities, activity]);
   }
 
   function removeUserActivity(activityId) {
-    const withoutIdList = userActivities.filter(id => id !== activityId);
+    const withoutIdList = userActivities.filter(({ id }) => id !== activityId);
 
     setUserActivities(withoutIdList);
   }
 
   function isSelectedActivity(activityId) {
-    return userActivities.includes(activityId);
+    return userActivities.some(({ id }) => id === activityId);
   }
 
   function handleFailRegister(status) {
@@ -99,6 +96,7 @@ export default function Activities() {
           ) : (
             <>
               {!selectedDay && <GreyText align="left">Primeiro, filtre pelo dia do evento: </GreyText>}
+
               <DaySelectionContainer>
                 {days.map((day) => (
                   <DaySelectionButton
@@ -113,6 +111,7 @@ export default function Activities() {
                   </DaySelectionButton>
                 ))}
               </DaySelectionContainer>
+
               <Locations
                 locations={locations}
                 handleActivityClick={handleActivityClick}

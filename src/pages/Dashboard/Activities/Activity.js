@@ -13,7 +13,7 @@ export default function Activity({ activityInfo, isSelected, onClick }) {
   } = activityInfo;
 
   return (
-    <Container height={+duration} isSelected={isSelected} onClick={onClick}>
+    <Container height={+duration} isSelected={isSelected} onClick={onClick} >
       <LeftSide>
         <Name>
           {name}
