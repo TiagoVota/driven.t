@@ -1,30 +1,82 @@
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+
+import usePayment from '../../../hooks/api/usePayment';
+import useToken from '../../../hooks/useToken';
+import useRegisterActivity from '../../../hooks/api/useRegisterActivity';
+import { getTicket } from '../../../hooks/api/useTicket';
+
+import { getEventDays } from '../../../services/eventDayApi';
+import { isValidActivityTime } from './helpers/activityClickHelper';
+
+import Locations from './Locations';
+
+import DaySelectionContainer from '../../../components/Activities/DaySelectionContainer';
+import DaySelectionButton from '../../../components/Activities/DaySelectionButton';
 import Title from '../../../components/Title';
 import GreyText from '../../../components/GreyText';
 import Box from '../../../components/Box';
 
-import { getTicket } from '../../../hooks/api/useTicket';
-import usePayment from '../../../hooks/api/usePayment';
-import DaySelectionContainer from '../../../components/Activities/DaySelectionContainer';
-import DaySelectionButton from '../../../components/Activities/DaySelectionButton';
-import { getEventDays } from '../../../services/eventDayApi';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import useToken from '../../../hooks/useToken';
-import Locations from './Locations';
-
 export default function Activities() {
   const { ticket, getTicketLoading } = getTicket();
   const { payment } = usePayment();
+  const { registerActivityLoading, registerActivity } = useRegisterActivity();
   const token = useToken();
   const [days, setDays] = useState([]);
+  const [userActivities, setUserActivities] = useState([]);
   const [selectedDay, setSelectedDay] = useState(0);
   const [locations, setLocations] = useState();
 
   useEffect(() => {
     const promise = getEventDays(token);
-    promise.then((eventDaysData) => setDays(eventDaysData));
-    promise.catch((error) => toast('Não foi possível encontrar os dias do evento'));
+    promise.then((eventDaysData) => {
+      setDays(eventDaysData.days);
+      setUserActivities(eventDaysData.userActivities);
+    });
+    promise.catch((error) => toast('Não foi possível encontrar as informações do evento'));
   }, []);
+
+  async function handleActivityClick(activity) {
+    if (registerActivityLoading) return;
+    if (activity.capacity <= activity.occupation) return;
+    if (isSelectedActivity(activity.id)) return;
+    if (!isValidActivityTime(activity, userActivities)) return;
+
+    addUserActivity(activity);
+    try {
+      await registerActivity(activity.id);
+    } catch (err) {
+      removeUserActivity(activity.id);
+
+      handleFailRegister(err.response.status);
+    }
+  }
+
+  function addUserActivity(activity) {
+    setUserActivities([ ...userActivities, activity]);
+  }
+
+  function removeUserActivity(activityId) {
+    const withoutIdList = userActivities.filter(({ id }) => id !== activityId);
+
+    setUserActivities(withoutIdList);
+  }
+
+  function isSelectedActivity(activityId) {
+    return userActivities.some(({ id }) => id === activityId);
+  }
+
+  function handleFailRegister(status) {
+    const msgStatus = {
+      401: 'Não autorizado, tente fazer login novamente!',
+      409: 'Horário ou atividade já selecionada!',
+      500: 'Erro com nosso servidor, tente novamente mais tarde, por favor 🥺'
+    };
+
+    const msgToSend = msgStatus[status] || 'Problema com o servidor 🥺';
+
+    toast.error(msgToSend);
+  }
 
   if (getTicketLoading) {
     return 'Carregando...';
@@ -44,6 +96,7 @@ export default function Activities() {
           ) : (
             <>
               {!selectedDay && <GreyText align="left">Primeiro, filtre pelo dia do evento: </GreyText>}
+
               <DaySelectionContainer>
                 {days.map((day) => (
                   <DaySelectionButton
@@ -58,7 +111,12 @@ export default function Activities() {
                   </DaySelectionButton>
                 ))}
               </DaySelectionContainer>
-              <Locations locations={locations} />
+
+              <Locations
+                locations={locations}
+                handleActivityClick={handleActivityClick}
+                isSelectedActivity={isSelectedActivity}
+              />
             </>
           )
         ) : (

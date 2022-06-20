@@ -35,7 +35,6 @@ export default function RoomSummary({ changePage }) {
   }
 
   function handleChangeRoom() {
-    // Pode colocar as funcionalidades necessárias para troca de quarto nessa função
     changePage();
   }
   return (

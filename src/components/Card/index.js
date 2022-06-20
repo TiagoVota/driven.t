@@ -95,7 +95,7 @@ export default class CardForm extends React.Component {
       number,
       expiry,
       cvc,
-      totalPrice: totalPrice,
+      totalPrice,
     };
 
     try {
@@ -104,7 +104,7 @@ export default class CardForm extends React.Component {
       toast('Pagamento realizado com sucesso');
       return confirmPayment(paymentInfo.isPayed);
     } catch (err) {
-      this.handleFailSubmit(err.status);
+      this.handleFailSubmit(err.response.status);
     }
   };
 
