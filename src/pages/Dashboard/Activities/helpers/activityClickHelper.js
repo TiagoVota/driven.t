@@ -1,8 +1,11 @@
-function isValidActivityTime(activity, userActivities) {
+function isValidActivityTime(activity, userActivities, eventDayIdSelected) {
   const activityStart = Number(activity.startAt);
   const activityEnd = activityStart + Number(activity.duration);
+  const userDayActivities = userActivities.filter(userActivity => {
+    return userActivity.Location.eventDayId === eventDayIdSelected;
+  });
 
-  const haveConflictActivityTime = userActivities.some((actualActivity) => {
+  const haveConflictActivityTime = userDayActivities.some((actualActivity) => {
     const actualStart = Number(actualActivity.startAt);
     const actualEnd = actualStart + Number(actualActivity.duration);
 
@@ -15,6 +18,16 @@ function isValidActivityTime(activity, userActivities) {
   return !haveConflictActivityTime;
 }
 
+function addEventDayInActivity(activity, eventDayId) {
+  return {
+    ...activity,
+    Location: {
+      eventDayId,
+    }
+  };
+}
+
 export {
   isValidActivityTime,
+  addEventDayInActivity,
 };

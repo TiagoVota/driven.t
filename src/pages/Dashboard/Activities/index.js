@@ -7,7 +7,7 @@ import useRegisterActivity from '../../../hooks/api/useRegisterActivity';
 import { getTicket } from '../../../hooks/api/useTicket';
 
 import { getEventDays } from '../../../services/eventDayApi';
-import { isValidActivityTime } from './helpers/activityClickHelper';
+import { addEventDayInActivity, isValidActivityTime } from './helpers/activityClickHelper';
 
 import Locations from './Locations';
 
@@ -38,9 +38,12 @@ export default function Activities() {
 
   async function handleActivityClick(activity) {
     if (registerActivityLoading) return;
+
     if (activity.capacity <= activity.occupation) return;
     if (isSelectedActivity(activity.id)) return;
-    if (!isValidActivityTime(activity, userActivities)) return;
+
+    const addActivity = addEventDayInActivity(activity, selectedDay);
+    if (!isValidActivityTime(addActivity, userActivities, selectedDay)) return;
 
     addUserActivity(activity);
     try {
@@ -53,7 +56,9 @@ export default function Activities() {
   }
 
   function addUserActivity(activity) {
-    setUserActivities([ ...userActivities, activity]);
+    const addActivity = addEventDayInActivity(activity, selectedDay);
+
+    setUserActivities([ ...userActivities, addActivity]);
   }
 
   function removeUserActivity(activityId) {
